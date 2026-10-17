@@ -81,5 +81,15 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
  .grid3,.grid2,.stats{grid-template-columns:1fr 1fr}
  .ticker .wrap{grid-template-columns:repeat(2,1fr)}
 }
+/* Ajoutez ceci au début de votre fichier style.css */
+body {
+  background-image: url (Gemini_Generated_Image); /* Remplacez par le nom exact de votre fichier image */
+  background-size: cover;         /* L'image couvre toute la surface */
+  background-position: center;    /* L'image est centrée */
+  background-repeat: no-repeat;   /* L'image ne se répète pas */
+  background-attachment: fixed;   /* L'image reste fixe lors du défilement (optionnel mais recommandé) */
+  min-height: 100vh;              /* Assure que le body prend toute la hauteur de l'écran */
+  margin: 0;                      /* Supprime les marges par défaut */
+}
 @media(max-width:640px){.grid3,.grid2,.stats{grid-template-columns:1fr}.ticker .wrap{grid-template-columns:1fr}.tick{border-left:0;border-top:1px solid #e3e9f0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
