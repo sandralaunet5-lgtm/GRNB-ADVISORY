@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* === STYLES DE LA PAGE PUBLIQUE === */
         .tabs-countries { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { padding: 10px 20px; border: 1px solid #cbd5e1; background: #f8fafc; cursor: pointer; border-radius: 8px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; font-size: 0.95rem; }
         .tab-btn.active { background: #0f2b48; color: #fff; border-color: #0f2b48; box-shadow: 0 4px 6px -1px rgba(15, 43, 72, 0.2); }
@@ -26,14 +25,12 @@
         .badge-orange { color: #d97706; }
         .badge-red { color: #dc2626; }
 
-        /* Jauge Baromètre */
         .barometer-container { text-align: center; padding: 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; }
         .gauge-outer { width: 280px; height: 140px; margin: 0 auto; position: relative; background: linear-gradient(90deg, #dc2626 0%, #f59e0b 35%, #84cc16 70%, #16a34a 100%); border-top-left-radius: 140px; border-top-right-radius: 140px; overflow: hidden; }
         .gauge-inner { width: 200px; height: 100px; background: #fff; position: absolute; bottom: 0; left: 40px; border-top-left-radius: 100px; border-top-right-radius: 100px; }
         .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
         .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 12px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 700; }
 
-        /* === INTERFACE D'ADMINISTRATION EN COLONNES === */
         .admin-dashboard { display: none; margin-top: 30px; background: #e2e8f0; border: 2px solid #0f2b48; border-radius: 8px; padding: 20px; font-family: 'Inter', sans-serif; }
         .admin-dashboard.active { display: block; }
         .admin-header { background: #0f2b48; color: #fff; padding: 15px 20px; margin: -20px -20px 20px -20px; border-top-left-radius: 6px; border-top-right-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -81,13 +78,10 @@
             </button>
         </div>
 
-        <!-- Onglets publics -->
         <div class="tabs-countries" id="country-tabs"></div>
-
-        <!-- Affichage Public -->
         <div id="country-content"></div>
 
-        <!-- DASHBOARD ADMIN EN COLONNES -->
+        <!-- DASHBOARD ADMIN -->
         <div class="admin-dashboard" id="admin-dashboard">
             <div class="admin-header">
                 <h3 style="margin:0; color:#fff;">Administration : Gestion de la page 'Les marchés'</h3>
@@ -95,38 +89,36 @@
             </div>
 
             <div class="admin-layout">
-                <!-- COLONNE GAUCHE : GESTION DES PAYS -->
                 <div class="admin-sidebar">
                     <h4 style="margin-top:0;">Gestion des Pays</h4>
                     <div id="admin-country-list"></div>
                     <button class="btn-add-country" onclick="creerNouveauPays()">+ Ajouter un nouveau pays</button>
                 </div>
 
-                <!-- COLONNE DROITE : ÉDITION DU PAYS SÉLECTIONNÉ -->
                 <div class="admin-main-panel" id="admin-main-panel">
                     <h3 id="edit-country-title" style="margin-top:0; color:#0f2b48;">Édition du Pays</h3>
                     
                     <div style="display:flex; gap:10px;">
                         <div class="form-group" style="width: 80px;">
                             <label>Drapeau</label>
-                            <input type="text" id="edit-drapeau" placeholder="🇺🇸">
+                            <input type="text" id="edit-drapeau" placeholder="🇺🇸" oninput="applyChangesToMemory()">
                         </div>
                         <div class="form-group" style="flex:1;">
                             <label>Nom du Pays</label>
-                            <input type="text" id="edit-nom">
+                            <input type="text" id="edit-nom" oninput="applyChangesToMemory()">
                         </div>
                     </div>
 
                     <h4>Édition du Baromètre Cyclique</h4>
                     <div class="form-group">
                         <label>Curseur de Position (0 = Récession | 100 = Expansion)</label>
-                        <input type="range" id="edit-barometre" min="0" max="100" oninput="document.getElementById('val-baro-display').innerText = this.value">
+                        <input type="range" id="edit-barometre" min="0" max="100" oninput="document.getElementById('val-baro-display').innerText = this.value; applyChangesToMemory();">
                         <div style="font-weight:600; font-size:0.85rem; margin-top:4px;">Position : <span id="val-baro-display">50</span>/100</div>
                     </div>
 
                     <div class="form-group">
                         <label>Texte d'interprétation</label>
-                        <textarea id="edit-texte-cycle" rows="3"></textarea>
+                        <textarea id="edit-texte-cycle" rows="3" oninput="applyChangesToMemory()"></textarea>
                     </div>
 
                     <h4>Édition des Indicateurs Macroéconomiques</h4>
@@ -137,8 +129,8 @@
                     </button>
 
                     <div style="margin-top:25px; padding-top:15px; border-top:1px solid #cbd5e1; display:flex; gap:10px;">
-                        <button class="btn-save-main" onclick="sauvegarderChangements()">Enregistrer les modifications</button>
-                        <button class="tab-btn" onclick="toggleAdminPanel()">Annuler</button>
+                        <button class="btn-save-main" onclick="sauvegarderChangementsSupabase()">Enregistrer les modifications</button>
+                        <button class="tab-btn" onclick="toggleAdminPanel()">Fermer</button>
                     </div>
                 </div>
             </div>
@@ -173,7 +165,6 @@
 
 <div id="site-footer"></div>
 
-<!-- SUPABASE ET LOGIQUE JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script src="main.js"></script>
@@ -192,22 +183,8 @@ const initialFallback = [
         position_barometre: 65,
         texte_cycle: 'L\'économie américaine fait preuve de résilience avec une croissance stable, mais l\'inflation reste un point de vigilance.',
         indicateurs: [
-            { nom: 'PIB Trimestriel', valeur: '+2.5%', tendance_type: 'green', texte_tendance: 'Croissance stable' },
-            { nom: 'Inflation IPC', valeur: '3.2%', tendance_type: 'orange', texte_tendance: 'Stable' },
-            { nom: 'Taux Directeurs', valeur: '5.25%', tendance_type: 'orange', texte_tendance: 'Stable' },
-            { nom: 'Chômage', valeur: '3.8%', tendance_type: 'green', texte_tendance: 'Faible' }
-        ]
-    },
-    {
-        id: '2',
-        pays_id: 'zone-euro',
-        nom: 'Zone Euro',
-        drapeau: '🇪🇺',
-        position_barometre: 35,
-        texte_cycle: 'Activité au ralenti. La BCE adopte une approche prudente face aux données d\'inflation.',
-        indicateurs: [
-            { nom: 'PIB Trimestriel', valeur: '+0.2%', tendance_type: 'red', texte_tendance: 'Stagnation' },
-            { nom: 'Inflation IPC', valeur: '2.6%', tendance_type: 'green', texte_tendance: 'En baisse' }
+            { nom: 'PIB Trimestriel', valeur: '+2.5%', tendance_type: 'green' },
+            { nom: 'Inflation IPC', valeur: '3.2%', tendance_type: 'orange' }
         ]
     }
 ];
@@ -232,6 +209,10 @@ async function loadMacroData() {
         selectedPaysId = globalPaysData[0].pays_id;
     }
 
+    renderAll();
+}
+
+function renderAll() {
     renderTabs();
     renderPublicContent();
     if (isAdminOpen) renderAdminDashboard();
@@ -248,9 +229,7 @@ function renderTabs() {
 
 function selectCountry(id) {
     selectedPaysId = id;
-    renderTabs();
-    renderPublicContent();
-    if (isAdminOpen) renderAdminDashboard();
+    renderAll();
 }
 
 function renderPublicContent() {
@@ -273,10 +252,10 @@ function renderPublicContent() {
                         let icon = ind.tendance_type === 'green' ? '▲' : (ind.tendance_type === 'orange' ? '▬' : '▼');
                         return `
                             <div class="indicator-card">
-                                <div class="indicator-title">${ind.nom}</div>
-                                <div class="indicator-value">${ind.valeur}</div>
+                                <div class="indicator-title">${ind.nom || 'Indicateur'}</div>
+                                <div class="indicator-value">${ind.valeur || '0'}</div>
                                 <div class="indicator-trend ${colorClass}">
-                                    <span>${icon}</span> ${ind.texte_tendance || ''}
+                                    <span>${icon}</span> ${ind.tendance_type === 'green' ? 'Favorable' : (ind.tendance_type === 'orange' ? 'Stable' : 'Alerte')}
                                 </div>
                             </div>
                         `;
@@ -337,23 +316,28 @@ function renderAdminDashboard() {
     document.getElementById('val-baro-display').innerText = pays.position_barometre || 50;
     document.getElementById('edit-texte-cycle').value = pays.texte_cycle || '';
 
-    syncFormToMemory();
+    renderIndicatorsEditor();
+}
+
+function renderIndicatorsEditor() {
+    const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
+    if (!pays || !pays.indicateurs) return;
 
     const indContainer = document.getElementById('admin-indicators-list');
-    indContainer.innerHTML = (pays.indicateurs || []).map((ind, idx) => `
+    indContainer.innerHTML = pays.indicateurs.map((ind, idx) => `
         <div class="card-ind-edit" data-idx="${idx}">
-            <button class="btn-del-ind" onclick="supprimerIndicateurForm(${idx})">✕</button>
+            <button class="btn-del-ind" type="button" onclick="supprimerIndicateurForm(${idx})">✕</button>
             <div class="form-group">
                 <label>Nom</label>
-                <input type="text" class="edit-ind-nom" value="${ind.nom || ''}" oninput="syncFormToMemory()">
+                <input type="text" value="${ind.nom || ''}" oninput="updateIndicatorField(${idx}, 'nom', this.value)">
             </div>
             <div class="form-group">
                 <label>Valeur</label>
-                <input type="text" class="edit-ind-valeur" value="${ind.valeur || ''}" oninput="syncFormToMemory()">
+                <input type="text" value="${ind.valeur || ''}" oninput="updateIndicatorField(${idx}, 'valeur', this.value)">
             </div>
             <div class="form-group">
                 <label>Tendance</label>
-                <select class="edit-ind-type" onchange="syncFormToMemory()">
+                <select onchange="updateIndicatorField(${idx}, 'tendance_type', this.value)">
                     <option value="green" ${ind.tendance_type === 'green' ? 'selected' : ''}>🟢 Vert (Haussier)</option>
                     <option value="orange" ${ind.tendance_type === 'orange' ? 'selected' : ''}>🟠 Orange (Neutre)</option>
                     <option value="red" ${ind.tendance_type === 'red' ? 'selected' : ''}>🔴 Rouge (Baissier)</option>
@@ -363,48 +347,44 @@ function renderAdminDashboard() {
     `).join('');
 }
 
-// Synchronise en temps réel les champs saisis dans l'objet en mémoire
-function syncFormToMemory() {
+function updateIndicatorField(idx, field, value) {
+    const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
+    if (pays && pays.indicateurs && pays.indicateurs[idx]) {
+        pays.indicateurs[idx][field] = value;
+        renderPublicContent();
+    }
+}
+
+function applyChangesToMemory() {
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
-
     pays.drapeau = document.getElementById('edit-drapeau').value;
     pays.nom = document.getElementById('edit-nom').value;
-    pays.position_barometre = parseInt(document.getElementById('edit-barometre').value) || 0;
+    pays.position_barometre = parseInt(document.getElementById('edit-barometre').value) || 50;
     pays.texte_cycle = document.getElementById('edit-texte-cycle').value;
-
-    const cards = document.querySelectorAll('.card-ind-edit');
-    pays.indicateurs = [];
-    cards.forEach(card => {
-        const type = card.querySelector('.edit-ind-type').value;
-        pays.indicateurs.push({
-            nom: card.querySelector('.edit-ind-nom').value,
-            valeur: card.querySelector('.edit-ind-valeur').value,
-            tendance_type: type,
-            texte_tendance: type === 'green' ? 'Favorable' : (type === 'orange' ? 'Stable' : 'Alerte')
-        });
-    });
+    renderTabs();
+    renderPublicContent();
 }
 
 function ajouterIndicateurForm() {
-    syncFormToMemory(); // Sauvegarde l'état actuel avant d'ajouter
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
     if (!pays.indicateurs) pays.indicateurs = [];
-    pays.indicateurs.push({ nom: 'Nouvel Indicateur', valeur: '0%', tendance_type: 'green', texte_tendance: 'Favorable' });
-    renderAdminDashboard(); // Ré-affiche l'écran admin avec le nouveau champ
+    pays.indicateurs.push({ nom: 'Nouveau', valeur: '0%', tendance_type: 'green' });
+    renderIndicatorsEditor();
+    renderPublicContent();
 }
 
 function supprimerIndicateurForm(idx) {
-    syncFormToMemory();
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
-    if (!pays) return;
+    if (!pays || !pays.indicateurs) return;
     pays.indicateurs.splice(idx, 1);
-    renderAdminDashboard();
+    renderIndicatorsEditor();
+    renderPublicContent();
 }
 
 async function creerNouveauPays() {
-    const nom = prompt("Nom du nouveau pays :");
+    const nom = prompt("Nom du nouveau pays ou zone :");
     if (!nom) return;
     const pays_id = nom.toLowerCase().replace(/[^a-z0-9]/g, '-');
     const newEntry = { pays_id, nom, drapeau: '🏳️', position_barometre: 50, texte_cycle: '', indicateurs: [] };
@@ -414,38 +394,41 @@ async function creerNouveauPays() {
     }
     globalPaysData.push(newEntry);
     selectedPaysId = pays_id;
-    await loadMacroData();
+    renderAll();
 }
 
 async function supprimerPays(paysId) {
-    if (!confirm("Supprimer ce pays ?")) return;
+    if (!confirm("Voulez-vous supprimer ce pays ?")) return;
     const pays = globalPaysData.find(p => p.pays_id === paysId);
     if (typeof supabaseClient !== 'undefined' && pays && pays.id) {
         await supabaseClient.from('marches_pays').delete().eq('id', pays.id);
     }
     globalPaysData = globalPaysData.filter(p => p.pays_id !== paysId);
     selectedPaysId = globalPaysData.length > 0 ? globalPaysData[0].pays_id : null;
-    await loadMacroData();
+    renderAll();
 }
 
-async function sauvegarderChangements() {
-    syncFormToMemory();
+async function sauvegarderChangementsSupabase() {
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
 
     if (typeof supabaseClient !== 'undefined' && pays.id) {
-        await supabaseClient.from('marches_pays').update({
+        const { error } = await supabaseClient.from('marches_pays').update({
             drapeau: pays.drapeau,
             nom: pays.nom,
             position_barometre: pays.position_barometre,
             texte_cycle: pays.texte_cycle,
             indicateurs: pays.indicateurs
         }).eq('id', pays.id);
+
+        if (error) {
+            alert("Erreur lors de la sauvegarde : " + error.message);
+            return;
+        }
     }
 
     alert("Modifications enregistrées avec succès !");
-    renderPublicContent();
-    renderAdminDashboard();
+    renderAll();
 }
 
 document.addEventListener('DOMContentLoaded', loadMacroData);
