@@ -176,7 +176,6 @@ let isAdminOpen = false;
 
 const initialFallback = [
     {
-        id: '1',
         pays_id: 'usa',
         nom: 'États-Unis',
         drapeau: '🇺🇸',
@@ -390,7 +389,10 @@ async function creerNouveauPays() {
     const newEntry = { pays_id, nom, drapeau: '🏳️', position_barometre: 50, texte_cycle: '', indicateurs: [] };
     
     if (typeof supabaseClient !== 'undefined') {
-        await supabaseClient.from('marches_pays').insert([newEntry]);
+        const { data, error } = await supabaseClient.from('marches_pays').insert([newEntry]).select();
+        if (!error && data && data.length > 0) {
+            newEntry.id = data[0].id;
+        }
     }
     globalPaysData.push(newEntry);
     selectedPaysId = pays_id;
@@ -412,14 +414,29 @@ async function sauvegarderChangementsSupabase() {
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
 
-    if (typeof supabaseClient !== 'undefined' && pays.id) {
-        const { error } = await supabaseClient.from('marches_pays').update({
+    if (typeof supabaseClient !== 'undefined') {
+        const payload = {
+            pays_id: pays.pays_id,
             drapeau: pays.drapeau,
             nom: pays.nom,
             position_barometre: pays.position_barometre,
             texte_cycle: pays.texte_cycle,
             indicateurs: pays.indicateurs
-        }).eq('id', pays.id);
+        };
+
+        let error = null;
+        if (pays.id) {
+            // Mise à jour si l'ID existe
+            const res = await supabaseClient.from('marches_pays').update(payload).eq('id', pays.id);
+            error = res.error;
+        } else {
+            // Insertion si le pays n'avait pas encore d'ID en base
+            const res = await supabaseClient.from('marches_pays').insert([payload]).select();
+            error = res.error;
+            if (!error && res.data && res.data.length > 0) {
+                pays.id = res.data[0].id;
+            }
+        }
 
         if (error) {
             alert("Erreur lors de la sauvegarde : " + error.message);
@@ -427,7 +444,7 @@ async function sauvegarderChangementsSupabase() {
         }
     }
 
-    alert("Modifications enregistrées avec succès !");
+    alert("Modifications enregistrées avec succès et stockées durablement !");
     renderAll();
 }
 
