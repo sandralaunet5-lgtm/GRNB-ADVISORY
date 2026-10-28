@@ -1,13 +1,169 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Les marchés | GRNB ADVISORY</title><meta name="description" content="Indicateurs et lecture des marchés financiers.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"></head><body>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Les marchés | GRNB ADVISORY</title>
+    <meta name="description" content="Indicateurs et lecture des marchés financiers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles spécifiques pour le tableau de bord Macro */
+        .tabs-countries { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 18px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; border-radius: 6px; font-weight: 500; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .tab-btn.active { background: #0f2b48; color: #fff; border-color: #0f2b48; }
+        
+        .macro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .indicator-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .indicator-title { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+        .indicator-value { font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+        .indicator-trend { font-size: 0.85rem; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        
+        .badge-green { color: #16a34a; }
+        .badge-orange { color: #d97706; }
+        .badge-red { color: #dc2626; }
+
+        /* Jauge Baromètre */
+        .barometer-container { text-align: center; margin: 20px 0; padding: 20px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .gauge-outer { width: 280px; height: 140px; margin: 0 auto; position: relative; background: linear-gradient(90deg, #dc2626 0%, #f59e0b 35%, #84cc16 70%, #16a34a 100%); border-top-left-radius: 140px; border-top-right-radius: 140px; overflow: hidden; }
+        .gauge-inner { width: 200px; height: 100px; background: #fff; position: absolute; bottom: 0; left: 40px; border-top-left-radius: 100px; border-top-right-radius: 100px; }
+        .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s ease-out; }
+        .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 10px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 600; }
+    </style>
+</head>
+<body>
 <div id="site-header"></div>
-<header class="page-hero"><div class="wrap"><h1>Les marchés</h1><p>Suivi des principaux indices, taux, devises et indicateurs macro.</p></div></header>
+
+<header class="page-hero">
+    <div class="wrap">
+        <h1>Les marchés</h1>
+        <p>Suivi des principaux indices, taux, devises et indicateurs macro.</p>
+    </div>
+</header>
+
 <div class="ticker" id="ticker"></div>
-<section><div class="wrap grid2"><div><h2 class="sec-title">Notre lecture du moment</h2><p>Cette section accueille votre analyse hebdomadaire : politique monétaire, inflation, croissance et positionnement recommandé par classe d’actifs. Modifiez ce texte dans <code>marches.html</code>.</p></div><div class="panel"><h3>Points de vigilance</h3><ul style="margin:12px 0 0 18px"><li>Trajectoire des taux directeurs</li><li>Inflation sous-jacente</li><li>Risques géopolitiques</li></ul></div></div></section>
-<section class="alt"><div class="wrap"><h2 class="sec-title">Analyses de marché</h2><br><div class="pubs" id="pubs" data-limit="3"></div></div></section>
+
+<!-- SECTION TABLEAU DE BORD MACRO ET CYCLIQUE -->
+<section>
+    <div class="wrap">
+        <h2 class="sec-title">Aperçu Macroéconomique par Pays / Zone</h2>
+        <div class="tabs-countries" id="country-tabs">
+            <!-- Onglets générés dynamiquement -->
+        </div>
+
+        <div id="country-content">
+            <!-- Contenu dynamique du pays sélectionné -->
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="wrap grid2">
+        <div>
+            <h2 class="sec-title">Notre lecture du moment</h2>
+            <p>Cette section accueille votre analyse hebdomadaire : politique monétaire, inflation, croissance et positionnement recommandé par classe d’actifs.</p>
+        </div>
+        <div class="panel">
+            <h3>Points de vigilance</h3>
+            <ul style="margin:12px 0 0 18px">
+                <li>Trajectoire des taux directeurs</li>
+                <li>Inflation sous-jacente</li>
+                <li>Risques géopolitiques</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="alt">
+    <div class="wrap">
+        <h2 class="sec-title">Analyses de marché</h2>
+        <br>
+        <div class="pubs" id="pubs" data-limit="3"></div>
+    </div>
+</section>
+
 <div id="site-footer"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="config.js"></script><script src="main.js"></script></body></html>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="main.js"></script>
+<script>
+let globalPaysData = [];
+
+async function loadMacroData() {
+    if (typeof supabaseClient === 'undefined') return;
+    
+    const { data, error } = await supabaseClient.from('marches_pays').select('*').order('created_at', { ascending: true });
+    if (error || !data || data.length === 0) return;
+
+    globalPaysData = data;
+    renderTabs();
+    selectCountry(data[0].pays_id);
+}
+
+function renderTabs() {
+    const tabsContainer = document.getElementById('country-tabs');
+    tabsContainer.innerHTML = globalPaysData.map((p, idx) => `
+        <button class="tab-btn ${idx === 0 ? 'active' : ''}" onclick="selectCountry('${p.pays_id}')">
+            ${p.drapeau || ''} ${p.nom}
+        </button>
+    `).join('');
+}
+
+function selectCountry(paysId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.includes(globalPaysData.find(p => p.pays_id === paysId)?.nom));
+    });
+
+    const pays = globalPaysData.find(p => p.pays_id === paysId);
+    if (!pays) return;
+
+    // Calcul de l'angle pour la jauge (-90deg à +90deg)
+    const angle = -90 + (pays.position_barometre * 1.8);
+
+    const contentDiv = document.getElementById('country-content');
+    contentDiv.innerHTML = `
+        <div class="grid2" style="align-items: start; gap: 30px;">
+            <div>
+                <h3>Indicateurs Macro - ${pays.nom}</h3>
+                <div class="macro-grid">
+                    ${(pays.indicateurs || []).map(ind => {
+                        let colorClass = ind.tendance_type === 'green' ? 'badge-green' : (ind.tendance_type === 'orange' ? 'badge-orange' : 'badge-red');
+                        let icon = ind.tendance_type === 'green' ? '▲' : (ind.tendance_type === 'orange' ? '▬' : '▼');
+                        return `
+                            <div class="indicator-card">
+                                <div class="indicator-title">${ind.nom}</div>
+                                <div class="indicator-value">${ind.valeur}</div>
+                                <div class="indicator-trend ${colorClass}">
+                                    <span>${icon}</span> ${ind.texte_tendance || ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+
+            <div class="barometer-container">
+                <h3>Situation Cyclique</h3>
+                <div class="gauge-outer">
+                    <div class="gauge-inner"></div>
+                    <div class="gauge-needle" style="transform: rotate(${angle}deg);"></div>
+                </div>
+                <div class="gauge-labels">
+                    <span>Récession</span>
+                    <span>Ralentissement</span>
+                    <span>Modérée</span>
+                    <span>Expansion</span>
+                </div>
+                <p style="margin-top:15px; font-size:0.95rem; color:#475569;">${pays.texte_cycle || 'Aucune analyse saisie.'}</p>
+            </div>
+        </div>
+    `;
+}
+
+document.addEventListener('DOMContentLoaded', loadMacroData);
+</script>
+</body>
+</html>
