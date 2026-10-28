@@ -33,7 +33,7 @@
         .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
         .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 12px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 700; }
 
-        /* === INTERFACE D'ADMINISTRATION EN COLONNES (STYLE CAPTURE) === */
+        /* === INTERFACE D'ADMINISTRATION EN COLONNES === */
         .admin-dashboard { display: none; margin-top: 30px; background: #e2e8f0; border: 2px solid #0f2b48; border-radius: 8px; padding: 20px; font-family: 'Inter', sans-serif; }
         .admin-dashboard.active { display: block; }
         .admin-header { background: #0f2b48; color: #fff; padding: 15px 20px; margin: -20px -20px 20px -20px; border-top-left-radius: 6px; border-top-right-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -132,7 +132,7 @@
                     <h4>Édition des Indicateurs Macroéconomiques</h4>
                     <div class="grid-indicators-edit" id="admin-indicators-list"></div>
                     
-                    <button class="tab-btn" onclick="ajouterIndicateurFormulaire()" style="margin-top:15px;">
+                    <button class="tab-btn" onclick="ajouterIndicateurForm()" style="margin-top:15px;">
                         + Ajouter un indicateur
                     </button>
 
@@ -183,7 +183,6 @@ let globalPaysData = [];
 let selectedPaysId = null;
 let isAdminOpen = false;
 
-// Données de secours par défaut
 const initialFallback = [
     {
         id: '1',
@@ -320,7 +319,6 @@ function toggleAdminPanel() {
 }
 
 function renderAdminDashboard() {
-    // Colonne gauche : Liste des pays
     const listContainer = document.getElementById('admin-country-list');
     listContainer.innerHTML = globalPaysData.map(p => `
         <div class="country-list-item ${p.pays_id === selectedPaysId ? 'selected' : ''}" onclick="selectCountry('${p.pays_id}')">
@@ -329,7 +327,6 @@ function renderAdminDashboard() {
         </div>
     `).join('');
 
-    // Colonne droite : Formulaire du pays actif
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
 
@@ -340,22 +337,23 @@ function renderAdminDashboard() {
     document.getElementById('val-baro-display').innerText = pays.position_barometre || 50;
     document.getElementById('edit-texte-cycle').value = pays.texte_cycle || '';
 
-    // Liste des indicateurs
+    syncFormToMemory();
+
     const indContainer = document.getElementById('admin-indicators-list');
     indContainer.innerHTML = (pays.indicateurs || []).map((ind, idx) => `
         <div class="card-ind-edit" data-idx="${idx}">
             <button class="btn-del-ind" onclick="supprimerIndicateurForm(${idx})">✕</button>
             <div class="form-group">
                 <label>Nom</label>
-                <input type="text" class="edit-ind-nom" value="${ind.nom || ''}">
+                <input type="text" class="edit-ind-nom" value="${ind.nom || ''}" oninput="syncFormToMemory()">
             </div>
             <div class="form-group">
                 <label>Valeur</label>
-                <input type="text" class="edit-ind-valeur" value="${ind.valeur || ''}">
+                <input type="text" class="edit-ind-valeur" value="${ind.valeur || ''}" oninput="syncFormToMemory()">
             </div>
             <div class="form-group">
                 <label>Tendance</label>
-                <select class="edit-ind-type">
+                <select class="edit-ind-type" onchange="syncFormToMemory()">
                     <option value="green" ${ind.tendance_type === 'green' ? 'selected' : ''}>🟢 Vert (Haussier)</option>
                     <option value="orange" ${ind.tendance_type === 'orange' ? 'selected' : ''}>🟠 Orange (Neutre)</option>
                     <option value="red" ${ind.tendance_type === 'red' ? 'selected' : ''}>🔴 Rouge (Baissier)</option>
@@ -365,15 +363,40 @@ function renderAdminDashboard() {
     `).join('');
 }
 
+// Synchronise en temps réel les champs saisis dans l'objet en mémoire
+function syncFormToMemory() {
+    const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
+    if (!pays) return;
+
+    pays.drapeau = document.getElementById('edit-drapeau').value;
+    pays.nom = document.getElementById('edit-nom').value;
+    pays.position_barometre = parseInt(document.getElementById('edit-barometre').value) || 0;
+    pays.texte_cycle = document.getElementById('edit-texte-cycle').value;
+
+    const cards = document.querySelectorAll('.card-ind-edit');
+    pays.indicateurs = [];
+    cards.forEach(card => {
+        const type = card.querySelector('.edit-ind-type').value;
+        pays.indicateurs.push({
+            nom: card.querySelector('.edit-ind-nom').value,
+            valeur: card.querySelector('.edit-ind-valeur').value,
+            tendance_type: type,
+            texte_tendance: type === 'green' ? 'Favorable' : (type === 'orange' ? 'Stable' : 'Alerte')
+        });
+    });
+}
+
 function ajouterIndicateurForm() {
+    syncFormToMemory(); // Sauvegarde l'état actuel avant d'ajouter
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
     if (!pays.indicateurs) pays.indicateurs = [];
     pays.indicateurs.push({ nom: 'Nouvel Indicateur', valeur: '0%', tendance_type: 'green', texte_tendance: 'Favorable' });
-    renderAdminDashboard();
+    renderAdminDashboard(); // Ré-affiche l'écran admin avec le nouveau champ
 }
 
 function supprimerIndicateurForm(idx) {
+    syncFormToMemory();
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
     pays.indicateurs.splice(idx, 1);
@@ -406,25 +429,9 @@ async function supprimerPays(paysId) {
 }
 
 async function sauvegarderChangements() {
+    syncFormToMemory();
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
-
-    pays.drapeau = document.getElementById('edit-drapeau').value;
-    pays.nom = document.getElementById('edit-nom').value;
-    pays.position_barometre = parseInt(document.getElementById('edit-barometre').value);
-    pays.texte_cycle = document.getElementById('edit-texte-cycle').value;
-
-    const cards = document.querySelectorAll('.card-ind-edit');
-    pays.indicateurs = [];
-    cards.forEach(card => {
-        const type = card.querySelector('.edit-ind-type').value;
-        pays.indicateurs.push({
-            nom: card.querySelector('.edit-ind-nom').value,
-            valeur: card.querySelector('.edit-ind-valeur').value,
-            tendance_type: type,
-            texte_tendance: type === 'green' ? 'Favorable' : (type === 'orange' ? 'Stable' : 'Alerte')
-        });
-    });
 
     if (typeof supabaseClient !== 'undefined' && pays.id) {
         await supabaseClient.from('marches_pays').update({
@@ -436,7 +443,7 @@ async function sauvegarderChangements() {
         }).eq('id', pays.id);
     }
 
-    alert("Modifications enregistrées !");
+    alert("Modifications enregistrées avec succès !");
     renderPublicContent();
     renderAdminDashboard();
 }
