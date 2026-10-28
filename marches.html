@@ -7,33 +7,52 @@
     <meta name="description" content="Indicateurs et lecture des marchés financiers.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
     <style>
-        /* Styles spécifiques pour le tableau de bord Macro */
+        /* === STYLES DU TABLEAU DE BORD MACRO === */
         .tabs-countries { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 18px; border: 1px solid #ccc; background: #f8f9fa; cursor: pointer; border-radius: 6px; font-weight: 500; font-family: 'Inter', sans-serif; transition: all 0.2s; }
-        .tab-btn.active { background: #0f2b48; color: #fff; border-color: #0f2b48; }
+        .tab-btn { padding: 10px 20px; border: 1px solid #cbd5e1; background: #f8fafc; cursor: pointer; border-radius: 8px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; font-size: 0.95rem; }
+        .tab-btn.active { background: #0f2b48; color: #fff; border-color: #0f2b48; box-shadow: 0 4px 6px -1px rgba(15, 43, 72, 0.2); }
         
-        .macro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
-        .indicator-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .indicator-title { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
-        .indicator-value { font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
-        .indicator-trend { font-size: 0.85rem; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .macro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin: 20px 0; }
+        .indicator-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); transition: transform 0.2s; }
+        .indicator-card:hover { transform: translateY(-2px); }
+        .indicator-title { font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase; tracking: 0.05em; margin-bottom: 8px; }
+        .indicator-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .indicator-trend { font-size: 0.85rem; display: flex; align-items: center; gap: 6px; font-weight: 600; }
         
         .badge-green { color: #16a34a; }
         .badge-orange { color: #d97706; }
         .badge-red { color: #dc2626; }
 
-        /* Jauge Baromètre */
-        .barometer-container { text-align: center; margin: 20px 0; padding: 20px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; }
+        /* === JAUGE BAROMÈTRE CYCLIQUE === */
+        .barometer-container { text-align: center; padding: 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .gauge-outer { width: 280px; height: 140px; margin: 0 auto; position: relative; background: linear-gradient(90deg, #dc2626 0%, #f59e0b 35%, #84cc16 70%, #16a34a 100%); border-top-left-radius: 140px; border-top-right-radius: 140px; overflow: hidden; }
         .gauge-inner { width: 200px; height: 100px; background: #fff; position: absolute; bottom: 0; left: 40px; border-top-left-radius: 100px; border-top-right-radius: 100px; }
-        .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s ease-out; }
-        .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 10px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 600; }
+        .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
+        .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 12px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 700; }
+
+        /* === PANNEAU D'ADMINISTRATION INTÉGRÉ === */
+        .admin-panel-integrated { margin-top: 35px; padding: 25px; background: #f1f5f9; border: 2px dashed #0f2b48; border-radius: 12px; font-family: 'Inter', sans-serif; display: none; }
+        .admin-panel-integrated.active { display: block; }
+        .admin-title { color: #0f2b48; margin-top: 0; font-size: 1.3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; }
+        .admin-field { margin-bottom: 15px; }
+        .admin-field label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 5px; color: #334155; }
+        .admin-field input, .admin-field select, .admin-field textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        
+        .btn-admin { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
+        .btn-admin-primary { background: #0f2b48; color: #fff; }
+        .btn-admin-primary:hover { background: #1e3a8a; }
+        .btn-admin-secondary { background: #e2e8f0; color: #334155; }
+        .btn-admin-danger { background: #dc2626; color: #fff; }
+
+        .ind-edit-row { background: #fff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: grid; grid-template-columns: 2fr 2fr 2fr auto; gap: 10px; align-items: end; }
     </style>
 </head>
 <body>
+
 <div id="site-header"></div>
 
 <header class="page-hero">
@@ -45,16 +64,76 @@
 
 <div class="ticker" id="ticker"></div>
 
-<!-- SECTION TABLEAU DE BORD MACRO ET CYCLIQUE -->
+<!-- SECTION TABLEAU DE BORD MACRO -->
 <section>
     <div class="wrap">
-        <h2 class="sec-title">Aperçu Macroéconomique par Pays / Zone</h2>
-        <div class="tabs-countries" id="country-tabs">
-            <!-- Onglets générés dynamiquement -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h2 class="sec-title" style="margin: 0;">Aperçu Macroéconomique par Pays / Zone</h2>
+            <!-- BOUTON D'ACCÈS ADMIN SUR LA PAGE MARCHÉ -->
+            <button onclick="toggleAdminPanel()" class="tab-btn" style="background: #0f2b48; color: #fff; border-color: #0f2b48;">
+                ⚙️ Mode Édition Admin
+            </button>
         </div>
 
+        <!-- Onglets des Pays -->
+        <div class="tabs-countries" id="country-tabs">
+            <!-- Dynamique -->
+        </div>
+
+        <!-- Contenu Public du Pays Sélectionné -->
         <div id="country-content">
-            <!-- Contenu dynamique du pays sélectionné -->
+            <p style="color: #64748b;">Chargement des données macroéconomiques...</p>
+        </div>
+
+        <!-- PANNEAU D'ADMINISTRATION DIRECTEMENT INTÉGRÉ SUR LA PAGE MARCHÉ -->
+        <div class="admin-panel-integrated" id="admin-panel">
+            <div class="admin-title">
+                <span>⚙️ Administration Directe : <span id="admin-country-name">États-Unis</span></span>
+                <div>
+                    <button class="btn-admin btn-admin-secondary" onclick="creerNouveauPays()">+ Ajouter un pays</button>
+                    <button class="btn-admin btn-admin-danger" onclick="supprimerPaysActuel()">Supprimer ce pays</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 3fr; gap: 15px; margin-top: 15px;">
+                <div class="admin-field">
+                    <label>Drapeau (Émoji)</label>
+                    <input type="text" id="edit-drapeau" placeholder="🇺🇸">
+                </div>
+                <div class="admin-field">
+                    <label>Nom du pays / de la zone</label>
+                    <input type="text" id="edit-nom" placeholder="États-Unis">
+                </div>
+            </div>
+
+            <div class="admin-field">
+                <label>Curseur Baromètre Cyclique (0 = Récession | 50 = Neutre | 100 = Expansion)</label>
+                <input type="range" id="edit-barometre" min="0" max="100" oninput="document.getElementById('val-baro').innerText = this.value">
+                <div style="font-size: 0.85rem; font-weight: 600; margin-top: 4px;">Valeur actuelle : <span id="val-baro">50</span>/100</div>
+            </div>
+
+            <div class="admin-field">
+                <label>Analyse & Interprétation de la situation cyclique</label>
+                <textarea id="edit-texte-cycle" rows="3" placeholder="Saisissez votre analyse sur la situation cyclique du pays..."></textarea>
+            </div>
+
+            <h4 style="margin: 20px 0 10px 0; color: #0f2b48;">Édition des Indicateurs Macroéconomiques</h4>
+            <div id="edit-indicators-container">
+                <!-- Chantiers d'indicateurs dynamiques -->
+            </div>
+            
+            <button class="btn-admin btn-admin-secondary" onclick="ajouterIndicateurFormulaire()" style="margin-top: 5px;">
+                + Ajouter un indicateur
+            </button>
+
+            <div style="margin-top: 25px; border-top: 1px solid #cbd5e1; padding-top: 15px; display: flex; gap: 10px;">
+                <button class="btn-admin btn-admin-primary" onclick="sauvegarderDonneesSupabase()">
+                    💾 Enregistrer les modifications
+                </button>
+                <button class="btn-admin btn-admin-secondary" onclick="toggleAdminPanel()">
+                    Fermer le mode édition
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -86,48 +165,96 @@
 
 <div id="site-footer"></div>
 
+<!-- LIBRARIES ET SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script src="main.js"></script>
+
 <script>
 let globalPaysData = [];
+let currentSelectedPaysId = null;
+let isAdminLoggedIn = false;
 
+// Données par défaut si Supabase n'est pas encore rempli
+const defaultFallbackData = [
+    {
+        id: '1',
+        pays_id: 'usa',
+        nom: 'États-Unis',
+        drapeau: '🇺🇸',
+        position_barometre: 65,
+        texte_cycle: 'L\'économie américaine fait preuve de résilience avec une croissance soutenue, bien que l\'inflation reste sous surveillance.',
+        indicateurs: [
+            { nom: 'PIB Trimestriel', valeur: '+2.8%', tendance_type: 'green', texte_tendance: 'Croissance solide' },
+            { nom: 'Inflation IPC', valeur: '3.1%', tendance_type: 'orange', texte_tendance: 'Modérée' },
+            { nom: 'Taux Directeurs', valeur: '5.25%', tendance_type: 'orange', texte_tendance: 'Pivot attendu' },
+            { nom: 'Chômage', valeur: '3.9%', tendance_type: 'green', texte_tendance: 'Plein emploi' }
+        ]
+    },
+    {
+        id: '2',
+        pays_id: 'zone-euro',
+        nom: 'Zone Euro',
+        drapeau: '🇪🇺',
+        position_barometre: 35,
+        texte_cycle: 'Activité au ralenti. La BCE adopte une approche prudente face aux données d\'inflation.',
+        indicateurs: [
+            { nom: 'PIB Trimestriel', valeur: '+0.2%', tendance_type: 'red', texte_tendance: 'Stagnation' },
+            { nom: 'Inflation IPC', valeur: '2.6%', tendance_type: 'green', texte_tendance: 'En baisse' },
+            { nom: 'Taux BCE', valeur: '4.25%', tendance_type: 'orange', texte_tendance: 'Maintien' }
+        ]
+    }
+];
+
+// CHARGEMENT INITIAL DES DONNÉES
 async function loadMacroData() {
-    if (typeof supabaseClient === 'undefined') return;
-    
-    const { data, error } = await supabaseClient.from('marches_pays').select('*').order('created_at', { ascending: true });
-    if (error || !data || data.length === 0) return;
+    if (typeof supabaseClient !== 'undefined') {
+        try {
+            const { data, error } = await supabaseClient.from('marches_pays').select('*').order('created_at', { ascending: true });
+            if (!error && data && data.length > 0) {
+                globalPaysData = data;
+            } else {
+                globalPaysData = defaultFallbackData;
+            }
+        } catch(e) {
+            globalPaysData = defaultFallbackData;
+        }
+    } else {
+        globalPaysData = defaultFallbackData;
+    }
 
-    globalPaysData = data;
     renderTabs();
-    selectCountry(data[0].pays_id);
+    if (globalPaysData.length > 0) {
+        selectCountry(currentSelectedPaysId || globalPaysData[0].pays_id);
+    }
 }
 
+// RENDU DES ONGLETS
 function renderTabs() {
     const tabsContainer = document.getElementById('country-tabs');
-    tabsContainer.innerHTML = globalPaysData.map((p, idx) => `
-        <button class="tab-btn ${idx === 0 ? 'active' : ''}" onclick="selectCountry('${p.pays_id}')">
+    tabsContainer.innerHTML = globalPaysData.map(p => `
+        <button class="tab-btn ${p.pays_id === currentSelectedPaysId ? 'active' : ''}" onclick="selectCountry('${p.pays_id}')">
             ${p.drapeau || ''} ${p.nom}
         </button>
     `).join('');
 }
 
+// SÉLECTION D'UN PAYS ET RENDU DU COMPOSANT PUBLIC
 function selectCountry(paysId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent.includes(globalPaysData.find(p => p.pays_id === paysId)?.nom));
-    });
+    currentSelectedPaysId = paysId;
+    renderTabs();
 
     const pays = globalPaysData.find(p => p.pays_id === paysId);
     if (!pays) return;
 
-    // Calcul de l'angle pour la jauge (-90deg à +90deg)
-    const angle = -90 + (pays.position_barometre * 1.8);
+    // Calcul de la rotation de l'aiguille du baromètre (-90deg à +90deg)
+    const angle = -90 + ((pays.position_barometre || 50) * 1.8);
 
     const contentDiv = document.getElementById('country-content');
     contentDiv.innerHTML = `
         <div class="grid2" style="align-items: start; gap: 30px;">
             <div>
-                <h3>Indicateurs Macro - ${pays.nom}</h3>
+                <h3 style="color:#0f2b48; margin-top:0;">Indicateurs Macro - ${pays.nom}</h3>
                 <div class="macro-grid">
                     ${(pays.indicateurs || []).map(ind => {
                         let colorClass = ind.tendance_type === 'green' ? 'badge-green' : (ind.tendance_type === 'orange' ? 'badge-orange' : 'badge-red');
@@ -146,7 +273,7 @@ function selectCountry(paysId) {
             </div>
 
             <div class="barometer-container">
-                <h3>Situation Cyclique</h3>
+                <h3 style="color:#0f2b48; margin-top:0;">Situation Cyclique</h3>
                 <div class="gauge-outer">
                     <div class="gauge-inner"></div>
                     <div class="gauge-needle" style="transform: rotate(${angle}deg);"></div>
@@ -157,13 +284,174 @@ function selectCountry(paysId) {
                     <span>Modérée</span>
                     <span>Expansion</span>
                 </div>
-                <p style="margin-top:15px; font-size:0.95rem; color:#475569;">${pays.texte_cycle || 'Aucune analyse saisie.'}</p>
+                <p style="margin-top:18px; font-size:0.95rem; color:#475569; line-height:1.5;">${pays.texte_cycle || 'Aucune analyse saisie.'}</p>
             </div>
         </div>
     `;
+
+    // Si le panneau d'administration est ouvert, mettre à jour ses champs avec le pays actif
+    if (isAdminLoggedIn) {
+        fillAdminForm(pays);
+    }
+}
+
+// TOGGLE ET SÉCURITÉ ADMIN SUR LA PAGE
+function toggleAdminPanel() {
+    const adminPanel = document.getElementById('admin-panel');
+    
+    if (!isAdminLoggedIn) {
+        const pass = prompt("Saisissez le mot de passe d'administration de la page Marchés :");
+        if (pass === "GRNB2026") { // Mot de passe d'accès direct
+            isAdminLoggedIn = true;
+            adminPanel.classList.add('active');
+            const currentPays = globalPaysData.find(p => p.pays_id === currentSelectedPaysId);
+            if (currentPays) fillAdminForm(currentPays);
+        } else if (pass !== null) {
+            alert("Mot de passe incorrect !");
+        }
+    } else {
+        adminPanel.classList.toggle('active');
+    }
+}
+
+// REMPLISSAGE DU FORMULAIRE D'ÉDITION DIRECTE
+function fillAdminForm(pays) {
+    document.getElementById('admin-country-name').innerText = pays.nom;
+    document.getElementById('edit-drapeau').value = pays.drapeau || '';
+    document.getElementById('edit-nom').value = pays.nom || '';
+    document.getElementById('edit-barometre').value = pays.position_barometre || 50;
+    document.getElementById('val-baro').innerText = pays.position_barometre || 50;
+    document.getElementById('edit-texte-cycle').value = pays.texte_cycle || '';
+
+    renderAdminIndicators(pays.indicateurs || []);
+}
+
+// ÉDITION DES INDICATEURS DANS LE FORMULAIRE ADMIN
+function renderAdminIndicators(indicateurs) {
+    const container = document.getElementById('edit-indicators-container');
+    container.innerHTML = indicateurs.map((ind, idx) => `
+        <div class="ind-edit-row" data-idx="${idx}">
+            <div>
+                <label>Nom Indicateur</label>
+                <input type="text" class="ind-edit-nom" value="${ind.nom || ''}" placeholder="ex: PIB">
+            </div>
+            <div>
+                <label>Donnée / Valeur</label>
+                <input type="text" class="ind-edit-valeur" value="${ind.valeur || ''}" placeholder="ex: +2.5%">
+            </div>
+            <div>
+                <label>Tendance & Émoji</label>
+                <select class="ind-edit-type">
+                    <option value="green" ${ind.tendance_type === 'green' ? 'selected' : ''}>🟢 Vert (Positif/Haussier)</option>
+                    <option value="orange" ${ind.tendance_type === 'orange' ? 'selected' : ''}>🟠 Orange (Neutre/Stable)</option>
+                    <option value="red" ${ind.tendance_type === 'red' ? 'selected' : ''}>🔴 Rouge (Alerte/Baissier)</option>
+                </select>
+            </div>
+            <button class="btn-admin btn-admin-danger" onclick="supprimerIndicateurFormulaire(${idx})">✕</button>
+        </div>
+    `).join('');
+}
+
+function ajouterIndicateurFormulaire() {
+    const current = getIndicateursFromAdminForm();
+    current.push({ nom: 'Nouvel Indicateur', valeur: '0%', tendance_type: 'green', texte_tendance: 'Stable' });
+    renderAdminIndicators(current);
+}
+
+function supprimerIndicateurFormulaire(idx) {
+    const current = getIndicateursFromAdminForm();
+    current.splice(idx, 1);
+    renderAdminIndicators(current);
+}
+
+function getIndicateursFromAdminForm() {
+    const rows = document.querySelectorAll('.ind-edit-row');
+    const result = [];
+    rows.forEach(row => {
+        const type = row.querySelector('.ind-edit-type').value;
+        result.push({
+            nom: row.querySelector('.ind-edit-nom').value,
+            valeur: row.querySelector('.ind-edit-valeur').value,
+            tendance_type: type,
+            texte_tendance: type === 'green' ? 'Favorable' : (type === 'orange' ? 'Sous surveillance' : 'Point de vigilance')
+        });
+    });
+    return result;
+}
+
+// AJOUT DE PAYS DIRECTEMENT
+async function creerNouveauPays() {
+    const nom = prompt("Nom du nouveau pays ou zone (ex: Chine, Japon) :");
+    if (!nom) return;
+
+    const pays_id = nom.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const newCountry = {
+        pays_id,
+        nom,
+        drapeau: '🏳️',
+        position_barometre: 50,
+        texte_cycle: 'Nouvelle zone ajoutée.',
+        indicateurs: []
+    };
+
+    if (typeof supabaseClient !== 'undefined') {
+        const { error } = await supabaseClient.from('marches_pays').insert([newCountry]);
+        if (error) alert("Erreur Supabase : " + error.message);
+    }
+    
+    globalPaysData.push(newCountry);
+    currentSelectedPaysId = pays_id;
+    await loadMacroData();
+}
+
+// SUPPRESSION DU PAYS ACTUEL DIRECTEMENT
+async function supprimerPaysActuel() {
+    const pays = globalPaysData.find(p => p.pays_id === currentSelectedPaysId);
+    if (!pays || !confirm(`Supprimer définitivement la zone ${pays.nom} ?`)) return;
+
+    if (typeof supabaseClient !== 'undefined' && pays.id) {
+        await supabaseClient.from('marches_pays').delete().eq('id', pays.id);
+    }
+
+    globalPaysData = globalPaysData.filter(p => p.pays_id !== currentSelectedPaysId);
+    currentSelectedPaysId = globalPaysData.length > 0 ? globalPaysData[0].pays_id : null;
+    await loadMacroData();
+}
+
+// SAUVEGARDER DIRECTEMENT LES MODIFICATIONS DANS SUPABASE ET METTRE À JOUR LA PAGE
+async function sauvegarderDonneesSupabase() {
+    const paysIndex = globalPaysData.findIndex(p => p.pays_id === currentSelectedPaysId);
+    if (paysIndex === -1) return;
+
+    const updatedData = {
+        drapeau: document.getElementById('edit-drapeau').value,
+        nom: document.getElementById('edit-nom').value,
+        position_barometre: parseInt(document.getElementById('edit-barometre').value),
+        texte_cycle: document.getElementById('edit-texte-cycle').value,
+        indicateurs: getIndicateursFromAdminForm()
+    };
+
+    // Mise à jour locale immédiate
+    globalPaysData[paysIndex] = { ...globalPaysData[paysIndex], ...updatedData };
+
+    // Sauvegarde en BDD Supabase si connecté
+    if (typeof supabaseClient !== 'undefined' && globalPaysData[paysIndex].id) {
+        const { error } = await supabaseClient.from('marches_pays')
+            .update(updatedData)
+            .eq('id', globalPaysData[paysIndex].id);
+            
+        if (error) {
+            alert("Erreur lors de la sauvegarde Supabase : " + error.message);
+            return;
+        }
+    }
+
+    alert("Modifications enregistrées avec succès !");
+    selectCountry(currentSelectedPaysId);
 }
 
 document.addEventListener('DOMContentLoaded', loadMacroData);
 </script>
+
 </body>
 </html>
