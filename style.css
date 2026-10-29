@@ -102,7 +102,7 @@ body {
     padding: 60px 0;
 }
 /* Application de l'image de fond sur les bannières de toutes les pages et de l'accueil */
-.hero {
+.page-hero.hero {
     position: relative;
     background-image: linear-gradient(rgba(15, 43, 72, 0.85), rgba(15, 43, 72, 0.85)), url('back.jpg');
     background-size: cover;
