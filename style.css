@@ -91,7 +91,7 @@ body {
   min-height: 100vh;              /* Assure que le body prend toute la hauteur de l'écran */
   margin: 0;                      /* Supprime les marges par défaut */
 }
-/* Arrière-plan pour la bannière de la page Les Marchés */
+/* Arrière-plan pour la bannière de la page les Marchés */
 .page-hero {
     position: relative;
     background-image: linear-gradient(rgba(15, 43, 72, 0.85), rgba(15, 43, 72, 0.85)), url('Gemini_Generated_Image.jpeg');
