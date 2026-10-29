@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Les marchés | GRNB ADVISORY</title>
-    <meta name="description" content="Indicateurs et lecture des marchés financiers.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <style>
@@ -85,7 +84,7 @@
         <div class="admin-dashboard" id="admin-dashboard">
             <div class="admin-header">
                 <h3 style="margin:0; color:#fff;">Administration : Gestion de la page 'Les marchés'</h3>
-                <span>Connecté : Administrateur GRNB</span>
+                <span id="db-status-badge" style="background:#dc2626; padding:4px 8px; border-radius:4px; font-size:0.8rem;">Vérification BDD...</span>
             </div>
 
             <div class="admin-layout">
@@ -138,31 +137,6 @@
     </div>
 </section>
 
-<section>
-    <div class="wrap grid2">
-        <div>
-            <h2 class="sec-title">Notre lecture du moment</h2>
-            <p>Cette section accueille votre analyse hebdomadaire : politique monétaire, inflation, croissance et positionnement recommandé par classe d’actifs.</p>
-        </div>
-        <div class="panel">
-            <h3>Points de vigilance</h3>
-            <ul style="margin:12px 0 0 18px">
-                <li>Trajectoire des taux directeurs</li>
-                <li>Inflation sous-jacente</li>
-                <li>Risques géopolitiques</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<section class="alt">
-    <div class="wrap">
-        <h2 class="sec-title">Analyses de marché</h2>
-        <br>
-        <div class="pubs" id="pubs" data-limit="3"></div>
-    </div>
-</section>
-
 <div id="site-footer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -180,27 +154,34 @@ const initialFallback = [
         nom: 'États-Unis',
         drapeau: '🇺🇸',
         position_barometre: 65,
-        texte_cycle: 'L\'économie américaine fait preuve de résilience avec une croissance stable, mais l\'inflation reste un point de vigilance.',
-        indicateurs: [
-            { nom: 'PIB Trimestriel', valeur: '+2.5%', tendance_type: 'green' },
-            { nom: 'Inflation IPC', valeur: '3.2%', tendance_type: 'orange' }
-        ]
+        texte_cycle: 'L\'économie américaine fait preuve de résilience.',
+        indicateurs: [{ nom: 'PIB', valeur: '+2.5%', tendance_type: 'green' }]
     }
 ];
 
 async function loadMacroData() {
+    const badge = document.getElementById('db-status-badge');
+    
     if (typeof supabaseClient !== 'undefined') {
         try {
             const { data, error } = await supabaseClient.from('marches_pays').select('*').order('created_at', { ascending: true });
-            if (!error && data && data.length > 0) {
+            if (error) {
+                console.error("Erreur Supabase:", error);
+                if(badge) { badge.style.background = '#dc2626'; badge.innerText = "Erreur BDD (Voir Console)"; }
+                globalPaysData = initialFallback;
+            } else if (data && data.length > 0) {
+                if(badge) { badge.style.background = '#16a34a'; badge.innerText = "Connecté à Supabase ✓"; }
                 globalPaysData = data;
             } else {
+                if(badge) { badge.style.background = '#d97706'; badge.innerText = "Table vide (Utilise secours)"; }
                 globalPaysData = initialFallback;
             }
         } catch(e) {
+            console.error("Exception:", e);
             globalPaysData = initialFallback;
         }
     } else {
+        if(badge) { badge.style.background = '#dc2626'; badge.innerText = "Supabase non défini dans config.js"; }
         globalPaysData = initialFallback;
     }
 
@@ -386,11 +367,21 @@ async function creerNouveauPays() {
     const nom = prompt("Nom du nouveau pays ou zone :");
     if (!nom) return;
     const pays_id = nom.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    
+    // Vérifier si le pays existe déjà en mémoire
+    if(globalPaysData.some(p => p.pays_id === pays_id)) {
+        alert("Ce pays existe déjà !");
+        return;
+    }
+
     const newEntry = { pays_id, nom, drapeau: '🏳️', position_barometre: 50, texte_cycle: '', indicateurs: [] };
     
     if (typeof supabaseClient !== 'undefined') {
         const { data, error } = await supabaseClient.from('marches_pays').insert([newEntry]).select();
-        if (!error && data && data.length > 0) {
+        if (error) {
+            alert("Erreur Supabase lors de l'insertion : " + error.message);
+            return;
+        } else if (data && data.length > 0) {
             newEntry.id = data[0].id;
         }
     }
@@ -424,28 +415,17 @@ async function sauvegarderChangementsSupabase() {
             indicateurs: pays.indicateurs
         };
 
-        let error = null;
-        if (pays.id) {
-            // Mise à jour si l'ID existe
-            const res = await supabaseClient.from('marches_pays').update(payload).eq('id', pays.id);
-            error = res.error;
-        } else {
-            // Insertion si le pays n'avait pas encore d'ID en base
-            const res = await supabaseClient.from('marches_pays').insert([payload]).select();
-            error = res.error;
-            if (!error && res.data && res.data.length > 0) {
-                pays.id = res.data[0].id;
-            }
-        }
+        // Utilisation de upsert basé sur la contrainte unique 'pays_id'
+        const { error } = await supabaseClient.from('marches_pays').upsert(payload, { onConflict: 'pays_id' });
 
         if (error) {
-            alert("Erreur lors de la sauvegarde : " + error.message);
+            alert("Erreur d'enregistrement Supabase : " + error.message);
             return;
         }
     }
 
-    alert("Modifications enregistrées avec succès et stockées durablement !");
-    renderAll();
+    alert("Modifications enregistrées et stockées durablement dans Supabase !");
+    loadMacroData();
 }
 
 document.addEventListener('DOMContentLoaded', loadMacroData);
