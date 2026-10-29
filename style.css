@@ -83,7 +83,7 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
 }
 /* Ajoutez ceci au début de votre fichier style.css */
 body {
-  background-image: url ('istockphoto-479137569-612x612.jpg'); /* Remplacez par le nom exact de votre fichier image */
+  background-image: url ('Gemini_Generated_Image.jpeg'); /* Remplacez par le nom exact de votre fichier image */
   background-size: cover;         /* L'image couvre toute la surface */
   background-position: center;    /* L'image est centrée */
   background-repeat: no-repeat;   /* L'image ne se répète pas */
