@@ -96,7 +96,7 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
 
 /* Arrière-plan plein écran exclusif à la page d'accueil */
 body.home-fullscreen {
-    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpg');
+    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('Gemini_Generated_Image.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
