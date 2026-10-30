@@ -92,15 +92,15 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
     color: #ffffff;
     padding: 60px 0;
 }
-/* Arrière-plan pour  l'accueil */
+/* Arrière-plan pour les bannières de toutes les pages et de l'accueil */
 .heros {
     position: relative;
-    background-image: linear-gradient(rgba(15, 43, 72, 0.85), rgba(15, 43, 72, 0.85)), url('back.jpg');
+    background-image: linear-gradient(rgba(15, 43, 72, 0.85), rgba(15, 43, 72, 0.85)), url('Gemini_Generated_Image.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     color: #ffffff;
-    padding: 80px 0;
+    padding: 60px 0;
 }
 
 }
