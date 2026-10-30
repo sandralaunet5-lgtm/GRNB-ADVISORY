@@ -103,7 +103,7 @@ body {
 }
 body {
     /* Voile sombre institutionnel par-dessus l'image pour garder le texte parfaitement lisible */
-    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpeg');
+    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
