@@ -94,9 +94,9 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
     padding: 60px 0;
 }
 
-/* Arrière-plan plein écran exclusif à la page d'accueil */
+/* Arrière-plan plein écran exclusif à la page d'accueil (avec correction du positionnement du texte et du header) */
 body.home-fullscreen {
-    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('Gemini_Generated_Image.jpeg');
+    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -104,6 +104,24 @@ body.home-fullscreen {
     min-height: 100vh;
     margin: 0;
     color: #ffffff;
+}
+
+body.home-fullscreen #site-header {
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+body.home-fullscreen .heros {
+    background: transparent !important;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+body.home-fullscreen .heros h1,
+body.home-fullscreen .heros p {
+    color: #ffffff !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 @media(max-width:640px){
