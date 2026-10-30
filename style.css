@@ -1,17 +1,7 @@
 :root{--navy:#0A192F;--navy2:#0B1B3D;--steel:#2B4C7E;--ice:#70A1D7;--mist:#EBF3FA;--mist2:#F4F8FC;--red:#c0392b;--green:#1e8e5a}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body {
-    /* Voile sombre institutionnel par-dessus l'image pour garder le texte parfaitement lisible */
-    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-    margin: 0;
-    color: #ffffff;
-}
+body{font-family:'Roboto',system-ui,sans-serif;color:var(--navy);background:#fff;line-height:1.65}
 h1,h2,h3,h4{font-family:'Inter','Montserrat',sans-serif;line-height:1.2}
 a{color:inherit}img,video{max-width:100%}
 .wrap{width:min(1180px,92%);margin:auto}
@@ -102,7 +92,7 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
     color: #ffffff;
     padding: 60px 0;
 }
-/* Arrière-plan pour les bannières de toutes les pages et de l'accueil */
+/* Arrière-plan pour  l'accueil */
 .heros {
     position: relative;
     background-image: linear-gradient(rgba(15, 43, 72, 0.85), rgba(15, 43, 72, 0.85)), url('back.jpg');
@@ -110,7 +100,7 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
     background-position: center;
     background-repeat: no-repeat;
     color: #ffffff;
-    padding: 60px 0;
+    padding: 80px 0;
 }
 
 }
