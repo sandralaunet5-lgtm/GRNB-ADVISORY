@@ -1,7 +1,17 @@
 :root{--navy:#0A192F;--navy2:#0B1B3D;--steel:#2B4C7E;--ice:#70A1D7;--mist:#EBF3FA;--mist2:#F4F8FC;--red:#c0392b;--green:#1e8e5a}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Roboto',system-ui,sans-serif;color:var(--navy);background:#fff;line-height:1.65}
+body {
+    /* Voile sombre institutionnel par-dessus l'image pour garder le texte parfaitement lisible */
+    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    color: #ffffff;
+}
 h1,h2,h3,h4{font-family:'Inter','Montserrat',sans-serif;line-height:1.2}
 a{color:inherit}img,video{max-width:100%}
 .wrap{width:min(1180px,92%);margin:auto}
@@ -81,16 +91,7 @@ footer .bot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;co
  .grid3,.grid2,.stats{grid-template-columns:1fr 1fr}
  .ticker .wrap{grid-template-columns:repeat(2,1fr)}
 }
-/* Ajoutez ceci au début de votre fichier style.css */
-body {
-  background-image: url ('images/back.jpg'); /* Remplacez par le nom exact de votre fichier image */
-  background-size: cover;         /* L'image couvre toute la surface */
-  background-position: center;    /* L'image est centrée */
-  background-repeat: no-repeat;   /* L'image ne se répète pas */
-  background-attachment: fixed;   /* L'image reste fixe lors du défilement (optionnel mais recommandé) */
-  min-height: 100vh;              /* Assure que le body prend toute la hauteur de l'écran */
-  margin: 0;                      /* Supprime les marges par défaut */
-}
+
 /* Arrière-plan pour la bannière de la page les Marchés */
 .page-hero {
     position: relative;
@@ -101,17 +102,7 @@ body {
     color: #ffffff;
     padding: 60px 0;
 }
-body {
-    /* Voile sombre institutionnel par-dessus l'image pour garder le texte parfaitement lisible */
-    background-image: linear-gradient(rgba(10, 25, 47, 0.88), rgba(10, 25, 47, 0.88)), url('back.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-    margin: 0;
-    color: #ffffff;
-}
+
 }
 @media(max-width:640px){.grid3,.grid2,.stats{grid-template-columns:1fr}.ticker .wrap{grid-template-columns:1fr}.tick{border-left:0;border-top:1px solid #e3e9f0}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
