@@ -126,6 +126,26 @@ body.home-fullscreen .heros p {
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
+/* Transparence du grand rectangle de la section du milieu et style des cartes sur l'accueil */
+body.home-fullscreen .alt {
+    background: transparent !important;
+}
+
+body.home-fullscreen .card {
+    background: rgba(10, 25, 47, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+body.home-fullscreen .card h3,
+body.home-fullscreen .card p {
+    color: #ffffff !important;
+}
+
+body.home-fullscreen .card .ico {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #70A1D7 !important;
+}
+
 @media(max-width:640px){
   .grid3,.grid2,.stats{grid-template-columns:1fr}
   .ticker .wrap{grid-template-columns:1fr}
