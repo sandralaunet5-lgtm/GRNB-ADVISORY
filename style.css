@@ -155,3 +155,35 @@ body.home-fullscreen .card .ico {
 @media(prefers-reduced-motion:reduce){
   *{transition:none!important;scroll-behavior:auto!important}
 }
+
+.institutional-compliance-box {
+    background: rgba(10, 25, 47, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 32px;
+    color: #ffffff;
+    margin: 40px auto;
+    max-width: 900px;
+}
+.institutional-compliance-box h3 {
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+}
+.compliance-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: grid;
+    gap: 10px;
+}
+.compliance-list li {
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+.legal-footer-info {
+    font-size: 0.85rem;
+    color: #9fb3cf;
+    margin-top: 6px;
+}
+
