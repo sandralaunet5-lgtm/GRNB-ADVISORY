@@ -34,10 +34,10 @@
         .badge-red { color: #dc2626; }
 
         .barometer-container { text-align: center; padding: 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; }
-        .gauge-outer { width: 280px; height: 140px; margin: 0 auto; position: relative; background: linear-gradient(90deg, #dc2626 0%, #f59e0b 35%, #84cc16 70%, #16a34a 100%); border-top-left-radius: 140px; border-top-right-radius: 140px; overflow: hidden; }
+        .gauge-outer { width: 280px; height: 140px; margin: 0 auto; position: relative; background: linear-gradient(90deg, #dc2626 0%, #f59e0b 25%, #84cc16 50%, #16a34a 75%, #dc2626 100%); border-top-left-radius: 140px; border-top-right-radius: 140px; overflow: hidden; }
         .gauge-inner { width: 200px; height: 100px; background: #fff; position: absolute; bottom: 0; left: 40px; border-top-left-radius: 100px; border-top-right-radius: 100px; }
         .gauge-needle { width: 4px; height: 110px; background: #0f172a; position: absolute; bottom: 0; left: 138px; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 2px; }
-        .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 12px auto 0; font-size: 0.75rem; color: #64748b; font-weight: 700; }
+        .gauge-labels { display: flex; justify-content: space-between; max-width: 320px; margin: 12px auto 0; font-size: 0.70rem; color: #64748b; font-weight: 700; }
 
         .admin-dashboard { display: none; margin-top: 30px; background: #e2e8f0; border: 2px solid #0f2b48; border-radius: 8px; padding: 20px; font-family: 'Inter', sans-serif; }
         .admin-dashboard.active { display: block; }
@@ -118,7 +118,7 @@
 
                     <h4>Édition du Baromètre Cyclique</h4>
                     <div class="form-group">
-                        <label>Curseur de Position (0 = Récession | 100 = Expansion)</label>
+                        <label>Curseur de Position (0 = Récession | 100 = Surchauffe)</label>
                         <input type="range" id="edit-barometre" min="0" max="100" oninput="document.getElementById('val-baro-display').innerText = this.value; applyChangesToMemory();">
                         <div style="font-weight:600; font-size:0.85rem; margin-top:4px;">Position : <span id="val-baro-display">50</span>/100</div>
                     </div>
@@ -259,6 +259,7 @@ function renderPublicContent() {
                     <span>Ralentissement</span>
                     <span>Modérée</span>
                     <span>Expansion</span>
+                    <span>Surchauffe</span>
                 </div>
                 <p style="margin-top:15px; font-size:0.95rem; color:#475569;">${pays.texte_cycle || ''}</p>
             </div>
@@ -373,7 +374,6 @@ async function creerNouveauPays() {
     if (!nom) return;
     const pays_id = nom.toLowerCase().replace(/[^a-z0-9]/g, '-');
     
-    // Vérifier si le pays existe déjà en mémoire
     if(globalPaysData.some(p => p.pays_id === pays_id)) {
         alert("Ce pays existe déjà !");
         return;
@@ -420,7 +420,6 @@ async function sauvegarderChangementsSupabase() {
             indicateurs: pays.indicateurs
         };
 
-        // Utilisation de upsert basé sur la contrainte unique 'pays_id'
         const { error } = await supabaseClient.from('marches_pays').upsert(payload, { onConflict: 'pays_id' });
 
         if (error) {
