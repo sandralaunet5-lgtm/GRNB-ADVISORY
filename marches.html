@@ -160,7 +160,7 @@ const initialFallback = [
         drapeau: '🇺🇸',
         position_barometre: 65,
         texte_cycle: 'L\'économie américaine fait preuve de résilience.',
-        indicateurs: [{ nom: 'PIB', valeur: '+2.5%', tendance_type: 'green' }]
+        indicateurs: [{ nom: 'PIB', valeur: '+2.5%', tendance_type: 'hausse-fav' }]
     }
 ];
 
@@ -233,14 +233,53 @@ function renderPublicContent() {
                 <h3>Indicateurs Macro - ${pays.nom}</h3>
                 <div class="macro-grid">
                     ${(pays.indicateurs || []).map(ind => {
-                        let colorClass = ind.tendance_type === 'green' ? 'badge-green' : (ind.tendance_type === 'orange' ? 'badge-orange' : 'badge-red');
-                        let icon = ind.tendance_type === 'green' ? '▲' : (ind.tendance_type === 'orange' ? '▬' : '▼');
+                        let type = ind.tendance_type || 'stable';
+                        let colorClass = 'badge-orange';
+                        let icon = '▬';
+                        let label = 'Stable';
+
+                        if (type === 'hausse-fav') {
+                            colorClass = 'badge-green';
+                            icon = '▲';
+                            label = 'Hausse Favorable';
+                        } else if (type === 'hausse-defav') {
+                            colorClass = 'badge-red';
+                            icon = '▲';
+                            label = 'Hausse Défavorable';
+                        } else if (type === 'baisse-fav') {
+                            colorClass = 'badge-green';
+                            icon = '▼';
+                            label = 'Baisse Favorable';
+                        } else if (type === 'baisse-defav') {
+                            colorClass = 'badge-red';
+                            icon = '▼';
+                            label = 'Baisse Défavorable';
+                        } else if (type === 'stable') {
+                            colorClass = 'badge-orange';
+                            icon = '▬';
+                            label = 'Stable';
+                        }
+                        // Rétrocompatibilité avec les anciennes valeurs de base
+                        else if (type === 'green') {
+                            colorClass = 'badge-green';
+                            icon = '▲';
+                            label = 'Favorable';
+                        } else if (type === 'red') {
+                            colorClass = 'badge-red';
+                            icon = '▼';
+                            label = 'Alerte';
+                        } else if (type === 'orange') {
+                            colorClass = 'badge-orange';
+                            icon = '▬';
+                            label = 'Stable';
+                        }
+
                         return `
                             <div class="indicator-card">
                                 <div class="indicator-title">${ind.nom || 'Indicateur'}</div>
                                 <div class="indicator-value">${ind.valeur || '0'}</div>
                                 <div class="indicator-trend ${colorClass}">
-                                    <span>${icon}</span> ${ind.tendance_type === 'green' ? 'Favorable' : (ind.tendance_type === 'orange' ? 'Stable' : 'Alerte')}
+                                    <span>${icon}</span> ${label}
                                 </div>
                             </div>
                         `;
@@ -324,9 +363,11 @@ function renderIndicatorsEditor() {
             <div class="form-group">
                 <label>Tendance</label>
                 <select onchange="updateIndicatorField(${idx}, 'tendance_type', this.value)">
-                    <option value="green" ${ind.tendance_type === 'green' ? 'selected' : ''}>🟢 Vert (Haussier)</option>
-                    <option value="orange" ${ind.tendance_type === 'orange' ? 'selected' : ''}>🟠 Orange (Neutre)</option>
-                    <option value="red" ${ind.tendance_type === 'red' ? 'selected' : ''}>🔴 Rouge (Baissier)</option>
+                    <option value="hausse-fav" ${ind.tendance_type === 'hausse-fav' ? 'selected' : ''}>🟢 Hausse Favorable</option>
+                    <option value="hausse-defav" ${ind.tendance_type === 'hausse-defav' ? 'selected' : ''}>🔴 Hausse Défavorable</option>
+                    <option value="baisse-fav" ${ind.tendance_type === 'baisse-fav' ? 'selected' : ''}>🟢 Baisse Favorable</option>
+                    <option value="baisse-defav" ${ind.tendance_type === 'baisse-defav' ? 'selected' : ''}>🔴 Baisse Défavorable</option>
+                    <option value="stable" ${ind.tendance_type === 'stable' ? 'selected' : ''}>🟠 Stable / Neutre</option>
                 </select>
             </div>
         </div>
@@ -356,7 +397,7 @@ function ajouterIndicateurForm() {
     const pays = globalPaysData.find(p => p.pays_id === selectedPaysId);
     if (!pays) return;
     if (!pays.indicateurs) pays.indicateurs = [];
-    pays.indicateurs.push({ nom: 'Nouveau', valeur: '0%', tendance_type: 'green' });
+    pays.indicateurs.push({ nom: 'Nouveau', valeur: '0%', tendance_type: 'hausse-fav' });
     renderIndicatorsEditor();
     renderPublicContent();
 }
