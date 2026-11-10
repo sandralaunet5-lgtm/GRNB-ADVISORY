@@ -106,9 +106,29 @@
                     <h3 id="edit-country-title" style="margin-top:0; color:#0f2b48;">Édition du Pays</h3>
                     
                     <div style="display:flex; gap:10px;">
-                        <div class="form-group" style="width: 80px;">
+                        <div class="form-group" style="width: 140px;">
                             <label>Drapeau</label>
-                            <input type="text" id="edit-drapeau" placeholder="🇺🇸" oninput="applyChangesToMemory()">
+                            <select id="edit-drapeau" onchange="applyChangesToMemory()">
+                                <option value="🏳️">🏳️ Standard</option>
+                                <option value="🇨🇳">🇨🇳 Chine</option>
+                                <option value="🇺🇸">🇺🇸 États-Unis</option>
+                                <option value="🇫🇷">🇫🇷 France</option>
+                                <option value="🇯🇵">🇯🇵 Japon</option>
+                                <option value="🌍">🌍 Zone UEMOA</option>
+                                <option value="🇩🇪">🇩🇪 Allemagne</option>
+                                <option value="🇬🇧">🇬🇧 Royaume-Uni</option>
+                                <option value="🇪🇺">🇪🇺 Zone Euro</option>
+                                <option value="🇮🇹">🇮🇹 Italie</option>
+                                <option value="🇪🇸">🇪🇸 Espagne</option>
+                                <option value="🇨🇮">🇨🇮 Côte d'Ivoire</option>
+                                <option value="🇸🇳">🇸🇳 Sénégal</option>
+                                <option value="🇨🇦">🇨🇦 Canada</option>
+                                <option value="🇨🇭">🇨🇭 Suisse</option>
+                                <option value="🇧🇷">🇧🇷 Brésil</option>
+                                <option value="🇮🇳">🇮🇳 Inde</option>
+                                <option value="🇷🇺">🇷🇺 Russie</option>
+                                <option value="🇿🇦">🇿🇦 Afrique du Sud</option>
+                            </select>
                         </div>
                         <div class="form-group" style="flex:1;">
                             <label>Nom du Pays</label>
@@ -335,7 +355,7 @@ function renderAdminDashboard() {
     if (!pays) return;
 
     document.getElementById('edit-country-title').innerText = `Édition : ${pays.nom}`;
-    document.getElementById('edit-drapeau').value = pays.drapeau || '';
+    document.getElementById('edit-drapeau').value = pays.drapeau || '🏳️';
     document.getElementById('edit-nom').value = pays.nom || '';
     document.getElementById('edit-barometre').value = pays.position_barometre || 50;
     document.getElementById('val-baro-display').innerText = pays.position_barometre || 50;
